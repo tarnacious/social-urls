@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>Recent Events</h1>
+{% for event in events %}
+<div>
+    <div>{{ event.created_on }} {{ event.event }} {{ event.count }}<div> 
+    {{ event.url }}
+</div>
+{% endfor %}
+{% endblock %}

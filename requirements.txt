@@ -5,3 +5,5 @@ tornado
 tornado-redis
 redis
 momoko
+flask
+Flask-SQLAlchemy
