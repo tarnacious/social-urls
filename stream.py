@@ -1,36 +1,51 @@
 from twython import TwythonStreamer
 import json
-from sql import session, Tweet
+from sql import session, Tweet, Event
 from time import sleep
 import settings
+import redis
+
+r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 
-class MyStreamer(TwythonStreamer):
-    def on_success(self, tweet):
+class TweetStreamer(TwythonStreamer):
+
+    def on_success(self, data):
         try:
-            for url in tweet["entities"]["urls"]:
-                print "Saving: ", url["expanded_url"]
-                entry = Tweet(
-                    url = url["expanded_url"],
-                    tweet_id = tweet["id"],
-                    text = tweet["text"],
-                    json = json.dumps(tweet))
-                session.add(entry)
-            session.commit()
-            self.errors = 0
-        except:
-            print "Processing error:", data
+            self.on_tweet(data)
+        except Exception as e:
+            print "Processing error:", data, e
 
     def on_error(self, status_code, data):
         print "Response error:", status_code, data
-        # self.disconnect()
 
+    def on_tweet(self, data):
+        # save the tweet
+        tweet = Tweet(json=json.dumps(data))
+        session.add(tweet)
 
-stream = MyStreamer(
-    settings.APP_KEY,
-    settings.APP_SECRET,
-    settings.OAUTH_TOKEN,
-    settings.OAUTH_TOKEN_SECRET
-)
+        for url in data["entities"]["urls"]:
+            print url["expanded_url"]
+            # save tweet url event
+            event = Event(
+                url=url["expanded_url"],
+                event='tweet',
+                count=1)
+            session.add(event)
 
-stream.statuses.filter(track='theage,bild,spiegel,reddit')
+            # push the url onto tweet_urls
+            r.lpush("tweet_urls", url["expanded_url"])
+
+        session.commit()
+
+if __name__ == "__main__":
+    # create a tweet streamer
+    stream = TweetStreamer(
+        settings.APP_KEY,
+        settings.APP_SECRET,
+        settings.OAUTH_TOKEN,
+        settings.OAUTH_TOKEN_SECRET
+    )
+
+    # start streaming some stuff
+    stream.statuses.filter(track='theage,bild,spiegel,reddit')

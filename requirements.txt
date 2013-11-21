@@ -1,3 +1,7 @@
 twython
 sqlalchemy
 psycopg2
+tornado
+tornado-redis
+redis
+momoko
