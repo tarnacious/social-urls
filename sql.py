@@ -6,7 +6,6 @@ import settings
 
 Base = declarative_base()
 
-
 class Tweet(Base):
     __tablename__ = 'tweets'
     id = Column(Integer, primary_key=True)
@@ -32,7 +31,10 @@ class Event(Base):
     count = Column(Integer)
     created_on = Column(DateTime, default=func.now())
 
-engine = create_engine(settings.POSTGRESQL, echo=False)
-Base.metadata.create_all(engine)
-Session = sessionmaker(bind=engine)
-session = Session()
+
+def create_session():
+    engine = create_engine(settings.POSTGRESQL, echo=False)
+    Base.metadata.create_all(engine)
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    return session

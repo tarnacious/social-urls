@@ -1,11 +1,12 @@
 from twython import TwythonStreamer
 import json
-from sql import session, Tweet, Event
+from sql import create_session, Tweet, Event
 from time import sleep
 import settings
 import redis
 
 r = redis.StrictRedis(host='localhost', port=6379, db=0)
+session = create_session()
 
 
 class TweetStreamer(TwythonStreamer):

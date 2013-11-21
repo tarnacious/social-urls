@@ -1,6 +1,7 @@
-from sql import Event, Tweet, session
+from sql import Event, Tweet, create_session
 import json
 
+session = create_session()
 
 def load_json():
     for row in session.query(Tweet).order_by(Tweet.id):
