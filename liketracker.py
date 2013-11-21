@@ -61,7 +61,7 @@ class LikeTracker(object):
             self.save_like(url, result)
             if 'result' in self.urls[url]:
                 #print "We have a previous result"
-                match = compare_likes(result, self.urls[url]["result"])
+                match = compare_likes(self.urls[url]["result"], result)
                 if match != 0:
                     #print "Results have changed"
                     self.save_event(url, match)
