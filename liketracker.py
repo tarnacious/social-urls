@@ -55,23 +55,15 @@ class LikeTracker(object):
 
     def _fetch_complete(self, url, response):
         self.current_requests = self.current_requests - 1
-        #print "Fetch complete:", url
         try:
             result = json.loads(response.body)
             self.save_like(url, result)
             if 'result' in self.urls[url]:
-                #print "We have a previous result"
                 match = compare_likes(self.urls[url]["result"], result)
                 if match != 0:
-                    #print "Results have changed"
                     self.save_event(url, match)
                     self.urls[url]["repeats"] = 3
-                else:
-                    #print "Results are the same"
-                    pass
-            else:
-                #print "New result"
-                self.urls[url]["result"] = result
+            self.urls[url]["result"] = result
 
         except Exception as e:
             print "Error parsing:", url, e, response.body
