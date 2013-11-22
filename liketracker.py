@@ -6,6 +6,7 @@ import json
 import tornadoredis
 import momoko
 import settings
+import sys
 
 
 def like_url(url):
@@ -39,9 +40,9 @@ class LikeTracker(object):
         self.status()
 
     def _fetch(self, url):
-        if self.current_requests > 8:
+        if self.current_requests > 4:
             #print "Exceeding current request, wait 2 seconds:", url
-            self._wait(url, interval=timedelta(seconds=0.5),
+            self._wait(url, interval=timedelta(seconds=2),
                        decrement=False)
             return
 
@@ -69,7 +70,7 @@ class LikeTracker(object):
             print "Error parsing:", url, e, response.body
         self._wait(url)
 
-    def _wait(self, url, interval=timedelta(minutes=10), decrement=True):
+    def _wait(self, url, interval=timedelta(minutes=20), decrement=True):
         def wait_complete():
             #print "Wait complete:", url
             self._fetch(url)
@@ -108,6 +109,7 @@ class LikeTracker(object):
         print "Total Requests:", self.total_requests
         print "Current Requests:", self.current_requests
         print "*" * 40
+	sys.stdout.flush()
         self._ioloop.add_timeout(timedelta(seconds=10), self.status)
 
     def start_queue(self):
