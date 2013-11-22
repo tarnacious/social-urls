@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>Details</h1>
+<h3><a href="{{ url }}" target="_blank">{{ url }}</a></h3>
+{% for event in events %}
+<div>
+    <div>{{ event.created_on }} {{ event.event }} {{ event.count }}<div> 
+</div>
+{% endfor %}
+{% endblock %}
