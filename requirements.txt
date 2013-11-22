@@ -7,3 +7,4 @@ redis
 momoko
 flask
 Flask-SQLAlchemy
+gunicorn
