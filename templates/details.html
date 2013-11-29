@@ -1,10 +1,30 @@
 {% extends "layout.html" %}
+{% block scripts %}
+    <script src="/js/chart.min.js"></script>
+    <script>
+        var data = {{ json|safe }};
+    </script>
+    <script src="/js/charts.js"></script>
+{% endblock %}
+
 {% block body %}
 <h1>Details</h1>
 <h3><a href="{{ url }}" target="_blank">{{ url }}</a></h3>
+<h3>Tweets</h3>
+<div>
+    <canvas id="twitterChart" width="800" height="400"></canvas>
+</div>
+<h3>Facebook</h3>
+<div>
+    <canvas id="facebookChart" width="800" height="400"></canvas>
+</div>
+<h3>Events</h3>
+<div>
 {% for event in events %}
 <div>
     <div>{{ event.created_on }} {{ event.event }} {{ event.count }}<div> 
 </div>
 {% endfor %}
+</div>
+
 {% endblock %}

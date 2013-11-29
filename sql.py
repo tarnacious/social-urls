@@ -38,3 +38,25 @@ def create_session():
     Session = sessionmaker(bind=engine)
     session = Session()
     return session
+
+
+def aggregated_intervals(events):
+    start = events[-1].created_on
+    end = events[0].created_on
+    interval = (end - start) / 20
+    results = []
+    for i in range(22):
+        time = start + (interval * i)
+        count = sum([event.count for event in events if event.created_on <= time])
+        results.append({"time": time, "count": count})
+    return results
+
+
+if __name__ == "__main__":
+    session = create_session()
+    events = session \
+               .query(Event) \
+               .order_by(Event.id.desc()) \
+               .all()
+    for interval in aggregated_intervals(events):
+        print interval
