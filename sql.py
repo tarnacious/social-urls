@@ -40,12 +40,9 @@ def create_session():
     return session
 
 
-def aggregated_intervals(events):
-    start = events[-1].created_on
-    end = events[0].created_on
-    interval = (end - start) / 20
+def aggregated_intervals(events, start=None, interval=None, count=20):
     results = []
-    for i in range(22):
+    for i in range(count):
         time = start + (interval * i)
         count = sum([event.count for event in events if event.created_on <= time])
         results.append({"time": time, "count": count})

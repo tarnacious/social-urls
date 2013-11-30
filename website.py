@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 from sql import Event, aggregated_intervals
+from datetime import datetime, timedelta
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy import func, desc
 import settings
@@ -9,18 +10,39 @@ app.config['SQLALCHEMY_DATABASE_URI'] = settings.POSTGRESQL
 
 db = SQLAlchemy(app)
 
+
+@app.template_filter('shortenurl')
+def shortenurl(url):
+    if len(url) > 40:
+        return "%s..." % url[:40]
+    return url
+
 @app.route('/')
 def index():
-    events = db.session\
+    hot_tweets = db.session\
                .query(Event.url,func.sum(Event.count))\
+               .filter(Event.event == 'tweet')\
+               .filter(Event.created_on > datetime.now() - timedelta(hours=1))\
                .group_by(Event.url)\
                .order_by(desc(func.sum(Event.count)))\
-               .all()
-    return render_template('index.html', events=events)
+               .limit(10)
+
+    hot_facebook = db.session\
+               .query(Event.url,func.sum(Event.count))\
+               .filter(Event.event == 'facebook')\
+               .filter(Event.created_on > datetime.now() - timedelta(hours=1))\
+               .group_by(Event.url)\
+               .order_by(desc(func.sum(Event.count)))\
+               .limit(10)
+
+
+    return render_template('index.html',
+                           hot_tweets=hot_tweets,
+                           hot_facebook=hot_facebook)
 
 def map_event(event):
     return {
-        "time": str(event["time"]),
+        "time": event["time"].strftime("%I:%M"),
         "count": event["count"],
     }
 
@@ -34,13 +56,24 @@ def details():
                .all()
     tweets = [event for event in events if event.event == 'tweet']
     facebooks = [event for event in events if event.event == 'facebook']
-    mapped_tweets = [map_event(event) for event in aggregated_intervals(tweets)]
-    mapped_facebooks = [map_event(event) for event in aggregated_intervals(facebooks)]
+
+    start = datetime.now() - timedelta(hours=1)
+    interval = timedelta(hours=1) / 20
+    hour_tweets = [map_event(event) for event in aggregated_intervals(tweets, start, interval, 20)]
+    hour_facebooks = [map_event(event) for event in aggregated_intervals(facebooks, start, interval, 20)]
+    start = datetime.now() - timedelta(hours=48)
+    interval = timedelta(hours=48) / 48
+    twoday_tweets = [map_event(event) for event in aggregated_intervals(tweets, start, interval, 48)]
+    twoday_facebooks = [map_event(event) for event in aggregated_intervals(facebooks, start, interval, 48)]
+
     return render_template('details.html',
                            events=events,
                            url=url,
-                           json=json.dumps({"tweets": mapped_tweets,
-                                            "facebook": mapped_facebooks})
+                           json=json.dumps({"tweets": hour_tweets,
+                                            "facebook": hour_facebooks,
+                                            "twoday_tweets": twoday_tweets,
+                                            "twoday_facebook": twoday_facebooks,
+                                            })
                            )
 
 if __name__ == '__main__':

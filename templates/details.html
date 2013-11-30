@@ -8,23 +8,21 @@
 {% endblock %}
 
 {% block body %}
-<h1>Details</h1>
 <h3><a href="{{ url }}" target="_blank">{{ url }}</a></h3>
-<h3>Tweets</h3>
+<h3>Tweets Last Hour</h3>
 <div>
     <canvas id="twitterChart" width="800" height="400"></canvas>
 </div>
-<h3>Facebook</h3>
+<h3>Facebook Last Hour</h3>
 <div>
     <canvas id="facebookChart" width="800" height="400"></canvas>
 </div>
-<h3>Events</h3>
+<h3>Tweets Last Two Days</h3>
 <div>
-{% for event in events %}
+    <canvas id="twoDayTwitterChart" width="800" height="400"></canvas>
+</div>
+<h3>Facebook Last Two Days</h3>
 <div>
-    <div>{{ event.created_on }} {{ event.event }} {{ event.count }}<div> 
+    <canvas id="twoDayFacebookChart" width="800" height="400"></canvas>
 </div>
-{% endfor %}
-</div>
-
 {% endblock %}
