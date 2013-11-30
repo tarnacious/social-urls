@@ -35,8 +35,29 @@ def index():
                .order_by(desc(func.sum(Event.count)))\
                .limit(10)
 
+    tweets_alltime = db.session.query(func.count(Event.id))\
+                       .filter(Event.event == 'tweet')\
+                       .scalar()
+
+    tweets_hour = db.session.query(func.count(Event.id))\
+                       .filter(Event.event == 'tweet')\
+                       .filter(Event.created_on > datetime.now() - timedelta(hours=1))\
+                       .scalar()
+
+    facebook_alltime = db.session.query(func.count(Event.id))\
+                       .filter(Event.event == 'facebook')\
+                       .scalar()
+
+    facebook_hour = db.session.query(func.count(Event.id))\
+                       .filter(Event.event == 'facebook')\
+                       .filter(Event.created_on > datetime.now() - timedelta(hours=1))\
+                       .scalar()
 
     return render_template('index.html',
+                           tweets_alltime = tweets_alltime,
+                           tweets_hour = tweets_hour,
+                           facebook_alltime = facebook_alltime,
+                           facebook_hour = facebook_hour,
                            hot_tweets=hot_tweets,
                            hot_facebook=hot_facebook)
 
@@ -59,12 +80,12 @@ def details():
 
     start = datetime.now() - timedelta(hours=1)
     interval = timedelta(hours=1) / 20
-    hour_tweets = [map_event(event) for event in aggregated_intervals(tweets, start, interval, 20)]
-    hour_facebooks = [map_event(event) for event in aggregated_intervals(facebooks, start, interval, 20)]
+    hour_tweets = [map_event(event) for event in aggregated_intervals(tweets, start, interval, 21)]
+    hour_facebooks = [map_event(event) for event in aggregated_intervals(facebooks, start, interval, 21)]
     start = datetime.now() - timedelta(hours=48)
     interval = timedelta(hours=48) / 48
-    twoday_tweets = [map_event(event) for event in aggregated_intervals(tweets, start, interval, 48)]
-    twoday_facebooks = [map_event(event) for event in aggregated_intervals(facebooks, start, interval, 48)]
+    twoday_tweets = [map_event(event) for event in aggregated_intervals(tweets, start, interval, 49)]
+    twoday_facebooks = [map_event(event) for event in aggregated_intervals(facebooks, start, interval, 49)]
 
     return render_template('details.html',
                            events=events,
