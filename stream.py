@@ -49,4 +49,4 @@ if __name__ == "__main__":
     )
 
     # start streaming some stuff
-    stream.statuses.filter(track='theage,bild,spiegel,reddit')
+    stream.statuses.filter(track='theage,bild,spiegel,reddit,welt')
