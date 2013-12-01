@@ -21,8 +21,10 @@ class TweetStreamer(TwythonStreamer):
 
     def on_tweet(self, data):
         # save the tweet
-        tweet = Tweet(json=json.dumps(data))
+        tweet_json = json.dumps(data)
+        tweet = Tweet(json=tweet_json)
         session.add(tweet)
+        r.publish('tweets',tweet_json)
 
         for url in data["entities"]["urls"]:
             print url["expanded_url"]
@@ -35,7 +37,6 @@ class TweetStreamer(TwythonStreamer):
 
             # push the url onto tweet_urls
             r.lpush("tweet_urls", url["expanded_url"])
-            r.publish('tweets', url)
 
         session.commit()
 
