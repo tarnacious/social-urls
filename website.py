@@ -17,6 +17,18 @@ def shortenurl(url):
         return "%s..." % url[:40]
     return url
 
+
+def hot(domain, event="tweet", hours=1):
+    results = db.session\
+                .query(Event.url,func.sum(Event.count))\
+                .filter(Event.event == event)\
+                .filter(Event.created_on > datetime.now() - timedelta(hours=1))\
+                .filter(Event.url.contains(domain))\
+                .group_by(Event.url)\
+                .order_by(desc(func.sum(Event.count)))\
+                .limit(10)
+    return results
+
 @app.route('/')
 def index():
     hot_tweets = db.session\
@@ -34,6 +46,11 @@ def index():
                .group_by(Event.url)\
                .order_by(desc(func.sum(Event.count)))\
                .limit(10)
+
+    hot_bild = hot('bild.de')
+    hot_spiegel = hot("spiegel.de")
+    hot_theage = hot("theage.com.au")
+    hot_welt = hot("welt.de")
 
     tweets_alltime = db.session.query(func.count(Event.id))\
                        .filter(Event.event == 'tweet')\
@@ -59,7 +76,12 @@ def index():
                            facebook_alltime = facebook_alltime,
                            facebook_hour = facebook_hour,
                            hot_tweets=hot_tweets,
-                           hot_facebook=hot_facebook)
+                           hot_facebook=hot_facebook,
+                           hot_bild=hot_bild,
+                           hot_spiegel=hot_spiegel,
+                           hot_theage=hot_theage,
+                           hot_welt=hot_welt
+                           )
 
 def map_event(event):
     return {

@@ -14,36 +14,89 @@
      <p>Seen {{ tweets_alltime }} links in tweets, {{ tweets_hour }} in the last hour. Seen {{ facebook_alltime }} changes in facebook statistics, {{ facebook_hour }} in the last hour.</p> 
       <!-- Example row of columns -->
       <div class="row">
-        <div class="col-md-6">
-          <h2>Last hour on Twitter</h2>
-<div class="media">
-    
-            {% for event in hot_tweets %}
-            <a class="pull-left" href="{{ url_for("details", url=event.url) }}">
-                {{ event[1] }}
-            </a>
-            <div class="media-body">
-                <h4 class="media-heading"><a href="{{ event.url }}" target="_blank">{{ event.url | shortenurl }}</a></h4>
-            </div>
-            {% endfor %}
-  </div>
-</div>
-        <div class="col-md-6">
-          <h2>Last hour on facebook</h2>
-            {% for event in hot_facebook %}
-            <a class="pull-left" href="{{ url_for("details", url=event.url) }}">
-                {{ event[1] }}
-            </a>
-            <div class="media-body">
-                <h4 class="media-heading"><a href="{{ event.url }}" target="_blank">{{ event.url | shortenurl }}</a></h4>
-            </div>
-            {% endfor %}
-            {% endblock %}
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-       </div>
+          <div class="col-md-6">
+              <h2>Last hour on Twitter</h2>
+              <div class="media">
+
+                  {% for event in hot_tweets %}
+                  <a class="pull-left" href="{{ url_for("details", url=event.url) }}">
+                      {{ event[1] }}
+                  </a>
+                  <div class="media-body">
+                      <h4 class="media-heading"><a href="{{ event.url }}" target="_blank">{{ event.url | shortenurl }}</a></h4>
+                  </div>
+                  {% endfor %}
+              </div>
+          </div>
+          <div class="col-md-6">
+              <h2>Last hour on facebook</h2>
+              {% for event in hot_facebook %}
+              <a class="pull-left" href="{{ url_for("details", url=event.url) }}">
+                  {{ event[1] }}
+              </a>
+              <div class="media-body">
+                  <h4 class="media-heading"><a href="{{ event.url }}" target="_blank">{{ event.url | shortenurl }}</a></h4>
+              </div>
+              {% endfor %}
+          </div>
       </div>
+      <div class="row">
+          <div class="col-md-6">
+              <h2>Bild Last hour on Twitter</h2>
+              <div class="media">
+
+                  {% for event in hot_bild %}
+                  <a class="pull-left" href="{{ url_for("details", url=event.url) }}">
+                      {{ event[1] }}
+                  </a>
+                  <div class="media-body">
+                      <h4 class="media-heading"><a href="{{ event.url }}" target="_blank">{{ event.url | shortenurl }}</a></h4>
+                  </div>
+                  {% endfor %}
+              </div>
+          </div>
+          <div class="col-md-6">
+              <h2>The Age Last hour on Twitter</h2>
+              {% for event in hot_theage %}
+              <a class="pull-left" href="{{ url_for("details", url=event.url) }}">
+                  {{ event[1] }}
+              </a>
+              <div class="media-body">
+                  <h4 class="media-heading"><a href="{{ event.url }}" target="_blank">{{ event.url | shortenurl }}</a></h4>
+              </div>
+              {% endfor %}
+          </div>
+      </div>
+
+      <div class="row">
+          <div class="col-md-6">
+              <h2>Welt Last hour on Twitter</h2>
+              <div class="media">
+
+                  {% for event in hot_welt %}
+                  <a class="pull-left" href="{{ url_for("details", url=event.url) }}">
+                      {{ event[1] }}
+                  </a>
+                  <div class="media-body">
+                      <h4 class="media-heading"><a href="{{ event.url }}" target="_blank">{{ event.url | shortenurl }}</a></h4>
+                  </div>
+                  {% endfor %}
+              </div>
+          </div>
+          <div class="col-md-6">
+              <h2>Spiegel Last hour on Twitter</h2>
+              {% for event in hot_spiegel %}
+              <a class="pull-left" href="{{ url_for("details", url=event.url) }}">
+                  {{ event[1] }}
+              </a>
+              <div class="media-body">
+                  <h4 class="media-heading"><a href="{{ event.url }}" target="_blank">{{ event.url | shortenurl }}</a></h4>
+              </div>
+              {% endfor %}
+          </div>
+      </div>
+  </div>
 
       <hr>
 
-<h1>Hot on Twitter</h1>
-<h1>Hot on Facebook</h1>
+              {% endblock %}
