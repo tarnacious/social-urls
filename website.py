@@ -119,6 +119,10 @@ def details():
                                             })
                            )
 
+@app.route('/tweets')
+def tweets():
+    return render_template('tweets.html')
+
 if __name__ == '__main__':
     app.debug = True
     app.run()
