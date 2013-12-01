@@ -1,7 +1,6 @@
 from twython import TwythonStreamer
 import json
 from sql import create_session, Tweet, Event
-from time import sleep
 import settings
 import redis
 
@@ -36,6 +35,7 @@ class TweetStreamer(TwythonStreamer):
 
             # push the url onto tweet_urls
             r.lpush("tweet_urls", url["expanded_url"])
+            r.publish('tweets', url)
 
         session.commit()
 
